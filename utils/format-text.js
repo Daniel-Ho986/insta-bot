@@ -1,5 +1,5 @@
-// Helper function to split input text into lines based on maximum character limit
-const getMaxNextLine = (input, maxChars = 40) => {
+// Split input text into lines based on maximum character limit
+const getMaxNextLine = (input, maxChars = 35) => {
 
   // Split the input text into an array of words
   const allWords = input.split(" ");
@@ -25,6 +25,6 @@ const getMaxNextLine = (input, maxChars = 40) => {
 };
 
 // Function to format the title and split it into lines
-exports.formatTitle = (title) => {
+exports.formatText = (title) => {
   return getMaxNextLine(title);
 };
