@@ -7,6 +7,7 @@
 const express = require("express");
 const app = express();
 
+const axios = require("axios");
 const Instagram = require("./utils/instagram-web-api");
 const { generateAndSaveImage } = require("./draw-image");
 
@@ -34,10 +35,58 @@ const instagramLoginFunction = () => {
       )
       .then((mostRecent) => Number(mostRecent.split(" - ")[0]))
       .then((latestNumber) => {
-        const updateNumber = latestNumber + 1;
+        const updatedNumber = latestNumber + 1;
+
+        const inkyDoodleQuery = `
+        query {
+          inkyDoodleCollection(where: { number: ${updateNumber}}) {
+            items {
+              number
+              generation
+              name
+              parents
+              image {
+                url
+              }
+            }
+          }
+        }
+        `;
+
+        axios({
+          url: `https://graphql.contentful.com/content/v1/space/${process.env.CONTENTFUL_SPACE_ID}`,
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.CONTENTFUL_ACCESS_TOKEN}`,
+          },
+          data: {
+            query: inkyDoodleQuery,
+          },
+        })
+          .then((res) => res.data)
+          .then(({ data, errors }) => {
+            if (errors) {
+              console.log(errors);
+            }
+
+            const updatedInkyDoodle = data.inkyDoodleCollection.items[0];
+            if (updatedInkyDoodle) {
+              const updateCaption = `${updatedNumber} - ${
+                updatedInkyDoodle.name
+              }\n${
+                updatedInkyDoodle.parents
+                  ? updatedInkyDoodle.parents.length > 0
+                    ? updatedInkyDoodle.parents
+                        .map((parent) => "#" + parent)
+                        .join(" + ") + " \n"
+                    : ""
+                  : ""
+              }#inkydoodle #gen${updatedInkyDoodle.generation}`;
+            }
+          });
       });
   };
-
   instagramPostPictureFunction();
 };
 
