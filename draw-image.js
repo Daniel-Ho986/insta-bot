@@ -49,7 +49,7 @@ async function generateAndSaveImage(quoteData, imageUrl, outputPath) {
     context.fillText(`- ${quoteData.a}`, centerX, centerY + textLines.length * 60 + 30);
 
     // Write the image to file
-    const buffer = canvas.toBuffer("image/jpg");
+    const buffer = canvas.toBuffer("image/jpeg");
     fs.writeFileSync(outputPath, buffer);
 }
 
