@@ -34,5 +34,5 @@ const postToInsta = async () => {
 
 postToInsta();
 
-const cronJob = new CronJob("30 5 * * *", postToInsta);
-cronJob.start();
+// const cronJob = new CronJob("30 5 * * *", postToInsta);
+// cronJob.start();
